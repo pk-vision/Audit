@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Boyfriend Audit</title>
+    <style>
+        :root {
+            --primary: #ff4a75;
+            --secondary: #ff85a2;
+            --background: #fff5f7;
+            --text: #2d2d2d;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: var(--card-bg);
+            max-width: 600px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 74, 117, 0.15);
+            padding: 30px;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        p.subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 74, 117, 0.3);
+        }
+
+        .btn:hover {
+            background: #e0355f;
+            transform: translateY(-2px);
+        }
+
+        /* Question Layout */
+        .progress-bar {
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            margin-bottom: 25px;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 20%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-card {
+            background: #fdfdfd;
+            border: 2px solid #eee;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .option-card:hover {
+            border-color: var(--secondary);
+            background: #fff9fa;
+        }
+
+        .option-card.selected {
+            border-color: var(--primary);
+            background: #ffe6ec;
+            font-weight: 600;
+        }
+
+        /* Blueprint Feedback area */
+        .blueprint {
+            background: #f9f9f9;
+            border-left: 4px solid #ffcc00;
+            padding: 15px;
+            border-radius: 0 12px 12px 0;
+            text-align: left;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: none;
+        }
+
+        .blueprint-title {
+            font-weight: bold;
+            color: #d4a000;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Results Screen */
+        .verdict-box {
+            background: #fff9fa;
+            border: 2px dashed var(--secondary);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .guilt-text {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 15px;
+        }
+
+        .cute-text {
+            font-weight: 600;
+            color: var(--primary);
+            line-height: 1.5;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+
+    <!-- SCREEN 1: START SCREEN -->
+    <div id="start-screen" class="screen active">
+        <h1>🚨 Karan's Ultimate Boyfriend Audit</h1>
+        <p class="subtitle">Hand the phone to Karan. Look him dead in the eye. <br>Your relationship data is currently being audited. Answer honestly, Karan.</p>
+        <div style="font-size: 5rem; margin-bottom: 20px;">🕵️‍♂️</div>
+        <button class="btn" onclick="startGame()">Start Audit</button>
+    </div>
+
+    <!-- SCREEN 2: QUIZ SCREEN -->
+    <div id="quiz-screen" class="screen">
+        <div class="progress-bar"><div class="progress" id="progress"></div></div>
+        <div class="question-text" id="question-text">Question text goes here?</div>
+        
+        <ul class="options-list" id="options-list">
+            <!-- JavaScript will inject choices here -->
+        </ul>
+
+        <div class="blueprint" id="blueprint-zone">
+            <div class="blueprint-title">💡 Ideal Boyfriend Blueprint</div>
+            <div id="blueprint-text">Blueprint advice goes here...</div>
+        </div>
+
+        <button class="btn" id="next-btn" style="margin-top: 15px; width: 100%;" onclick="handleNextClick()" disabled>Lock Answer</button>
+    </div>
+
+    <!-- SCREEN 3: RESULTS SCREEN -->
+    <div id="result-screen" class="screen">
+        <h1>📊 The Audit Report</h1>
+        <div class="score-display" id="final-score">0 / 5</div>
+        <h3 id="verdict-title" style="margin-bottom: 10px;">Verdict</h3>
+        
+        <div class="verdict-box" id="verdict-box">
+            <div class="guilt-text" id="guilt-zone"></div>
+            <div class="cute-text" id="cute-zone"></div>
+        </div>
+
+        <button class="btn" onclick="resetGame()">Retake Audit (If You Dare)</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+        {
+            q: "Your girlfriend says, 'Kuch nahi, I’m fine.' What is your immediate next move?",
+            options: [
+                { text: "Believe her, say 'Okay great!', and go back to scrolling Instagram.", score: 0 },
+                { text: "Ask 'Are you sure?' once, and if she says yes, order pizza.", score: 1 },
+                { text: "Initiate Defcon 1. Drop everything, look for physical clues, recall what you did 3 weeks ago, and order her favorite dessert immediately.", score: 2 }
+            ],
+            blueprint: "Sarcasm aside, 'Kuch nahi' is never 'nothing.' An ideal boyfriend knows it’s a trailer for a movie you definitely don’t want to watch. Be a detective, Karan. Dig deeper, or at least offer snacks. 🍫"
+        },
+        {
+            q: "It’s 11:30 PM. She sends a reel of a cute dress or a random aesthetic vacation spot. What does this mean?",
+            options: [
+                { text: "She’s just passing time before sleeping.", score: 0 },
+                { text: "She expects you to book that ₹2,00,000 Maldives villa by midnight.", score: 1 },
+                { text: "It’s a subtle hint, a mood check, or a prompt for you to say, 'You’d look so beautiful in this.'", score: 2 }
+            ],
+            blueprint: "If you think she’s just passing time, your romantic radar needs a software update, Karan. Sending a reel is an invitation to match her vibe. You don't have to buy the Maldives, but a little 'Let's go here someday' goes a long way. ✈️"
+        },
+        {
+            q: "We are getting ready to go out. She puts on an outfit and asks, 'Am I looking fat in this?' What is the legally correct answer?",
+            options: [
+                { text: "'No, you look fine.'", score: 0 },
+                { text: "'Maybe try the black one, it’s more slimming.'", score: 1 },
+                { text: "'Are you kidding? You look absolutely stunning. Wait, let me take a picture of you right now.'", score: 2 }
+            ],
+            blueprint: "'You look fine' is an absolute crime. And if you suggested the black dress for 'slimming' reasons, please pray for your soul. An ideal boyfriend doesn't just answer the question; he becomes her personal paparazzi and hype man. 📸"
+        },
+        {
+            q: "You are ordering food. She says, 'I’m not that hungry, I’ll just have a bite of whatever you order.' What do you actually order?",
+            options: [
+                { text: "Exactly what you want, expecting her to literally take just one bite.", score: 0 },
+                { text: "A single portion, but you eat really fast so she can't get to it.", score: 0 },
+                { text: "Your meal, plus a large extra portion of fries, an extra starter, and a backup dessert because 'one bite' means 50% of your plate.", score: 2 }
+            ],
+            blueprint: "Ah, the classic trap. If you chose the smaller options, prepare to stay hungry, Karan. Her appetite activates the second your food arrives. An ideal boyfriend always factors in the 'Girlfriend Tax.' Order the extra fries. It’s cheaper than an argument. 🍟"
+        },
+        {
+            q: "What is her current nail color, or what was the last thing she complained to you about?",
+            options: [
+                { text: "Uh... skin color? And she complains about everything?", score: 0 },
+                { text: "I remember the complaint (it was about work/a friend), but the nails are a mystery.", score: 1 },
+                { text: "I know both, because I actually listen and look at her hands when she holds mine.", score: 2 }
+            ],
+            blueprint: "An ideal boyfriend notices the details. If she spends 2 hours at the salon, the least you can do is spot the difference between 'crimson' and 'maroon'. Start paying attention, king! 💅"
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let selectedScore = 0;
+    let totalScore = 0;
+    let state = "question"; // "question" or "blueprint"
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function startGame() {
+        currentQuestionIndex = 0;
+        totalScore = 0;
+        showScreen('quiz-screen');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        state = "question";
+        const currentQuestion = quizData[currentQuestionIndex];
+        
+        // Progress Bar
+        document.getElementById('progress').style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
+        
+        // Text
+        document.getElementById('question-text').innerText = `Q${currentQuestionIndex + 1}: ${currentQuestion.q}`;
+        
+        // Hide Blueprint
+        document.getElementById('blueprint-zone').style.display = 'none';
+        
+        // Options
+        const optionsList = document.getElementById('options-list');
+        optionsList.innerHTML = '';
+        
+        currentQuestion.options.forEach((opt, idx) => {
+            const li = document.createElement('li');
+            li.className = 'option-card';
+            li.innerText = opt.text;
+            li.onclick = () => selectOption(li, opt.score);
+            optionsList.appendChild(li);
+        });
+
+        const nextBtn = document.getElementById('next-btn');
+        nextBtn.innerText = "Lock Answer";
+        nextBtn.disabled = true;
+    }
+
+    function selectOption(element, score) {
+        if (state !== "question") return; // locked once blueprint is shown
+        
+        document.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        
+        selectedScore = score;
+        document.getElementById('next-btn').disabled = false;
+    }
+
+    function handleNextClick() {
+        const nextBtn = document.getElementById('next-btn');
+        
+        if (state === "question") {
+            // Add score
+            totalScore += selectedScore;
+            
+            // Show Blueprint
+            const currentQuestion = quizData[currentQuestionIndex];
+            document.getElementById('blueprint-text').innerText = currentQuestion.blueprint;
+            document.getElementById('blueprint-zone').style.display = 'block';
+            
+            // Change button context
+            state = "blueprint";
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextBtn.innerText = "View Final Audit Verdict";
+            } else {
+                nextBtn.innerText = "Next Question 👉";
+            }
+        } else {
+            // Move on
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+    }
+
+    function showResults() {
+        showScreen('result-screen');
+        
+        // Max possible score is 10 (5 questions * max 2 points)
+        // Let's frame it as an out-of-5 scale for simpler presentation:
+        let normalizedScore = Math.round(totalScore / 2);
+        document.getElementById('final-score').innerText = `${normalizedScore} / 5`;
+
+        const title = document.getElementById('verdict-title');
+        const guiltZone = document.getElementById('guilt-zone');
+        const cuteZone = document.getElementById('cute-zone');
+
+        if (normalizedScore >= 4) {
+            title.innerText = "👑 Verdict: The Green Flag King";
+            guiltZone.innerHTML = "<strong>Report:</strong> You actually passed! You listen, observe, and clearly possess elite relationship survival instincts. You are dismissed from probation with high honors.";
+            cuteZone.innerText = "You get a massive gold star, unlimited bragging rights, and a huge hug. Keep being amazing! ❤️";
+        } else {
+            title.innerText = "⚠️ Verdict: The 'Karan, We Need To Talk' Zone";
+            guiltZone.innerText = "💔 Wow, Karan. Just... wow. The ledger of your boyfriend duties is currently running a heavy deficit. While you were busy living your best life, important hints were dropped, extra fries went un-ordered, and reels went un-replied. We aren't mad, just deeply, dramatically disappointed. The council of girlfriends is currently reviewing your visa status in this relationship.";
+            cuteZone.innerText = "Okay, fine, the quiz was tough, but your score is still tragic! Good thing for you, you’re incredibly cute, and your goofy smile somehow makes up for your total lack of telepathic abilities. I love you anyway, you absolute goofball. Now, go get the wallet—you owe somebody a massive treat to make up for this! 🍕❤️";
+        }
+    }
+
+    function resetGame() {
+        showScreen('start-screen');
+    }
+</script>
+
+</body>
+</html>
